@@ -12,4 +12,8 @@
     <label for="supportMaterial">Support Material:</label>
     <input type="checkbox" id="supportMaterial" [ngModel]="settings().supportMaterial" (ngModelChange)="updateSettings({ supportMaterial: $event })">
   </div>
+  <div>
+    <label for="wallCount">Wall Count:</label>
+    <input type="number" id="wallCount" [ngModel]="settings().wallCount" (ngModelChange)="updateSettings({ wallCount: $event })">
+  </div>
 </div>

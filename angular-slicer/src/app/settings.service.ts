@@ -4,6 +4,7 @@ export interface SlicerSettings {
   layerHeight: number;
   infillPercentage: number;
   supportMaterial: boolean;
+  wallCount: number;
 }
 
 @Injectable({
@@ -13,7 +14,8 @@ export class SettingsService {
   private settings = signal<SlicerSettings>({
     layerHeight: 0.2,
     infillPercentage: 20,
-    supportMaterial: false
+    supportMaterial: false,
+    wallCount: 2
   });
 
   getSettings() {
