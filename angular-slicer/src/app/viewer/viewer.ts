@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Vector2, Scene, PerspectiveCamera, WebGLRenderer, Mesh, Group, Color, AmbientLight, DirectionalLight, MeshStandardMaterial, Box3, Vector3, BufferGeometry, LineBasicMaterial, Line } from 'three';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 @Component({
   selector: 'app-viewer',
@@ -21,6 +22,7 @@ export class Viewer implements OnInit, OnChanges {
   private renderer!: WebGLRenderer;
   private model!: Mesh;
   private sliceGroup: Group = new Group();
+  private controls!: OrbitControls;
 
   constructor() { }
 
@@ -39,6 +41,11 @@ export class Viewer implements OnInit, OnChanges {
     this.scene.add(directionalLight);
 
     this.scene.add(this.sliceGroup);
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.25;
+    this.controls.enableZoom = true;
 
     this.camera.position.z = 5;
 
@@ -102,9 +109,7 @@ export class Viewer implements OnInit, OnChanges {
   private animate(): void {
     requestAnimationFrame(() => this.animate());
 
-    if (this.model) {
-      this.model.rotation.y += 0.01;
-    }
+    this.controls.update();
 
     if (this.renderer) {
       this.renderer.render(this.scene, this.camera);
