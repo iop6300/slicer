@@ -1,6 +1,8 @@
 {
   "name": "angular-slicer",
   "version": "0.0.0",
+  "description": "A 3D model slicer for 3D printing.",
+  "author": "iop6300",
   "main": "electron.js",
   "scripts": {
     "ng": "ng",
