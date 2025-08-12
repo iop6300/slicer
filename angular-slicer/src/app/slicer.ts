@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Mesh, Vector2, Plane, Vector3, BufferGeometry, BufferAttribute, Triangle, Line3 } from 'three';
 import * as ClipperLib from 'js-clipper';
+import { SettingsService } from './settings.service';
 
 interface ClipperPoint {
   X: number;
@@ -11,8 +12,12 @@ interface ClipperPoint {
   providedIn: 'root'
 })
 export class Slicer {
-  slice(model: Mesh, layerHeight: number = 0.2): Vector2[][][] {
+  private settingsService = inject(SettingsService);
+
+  slice(model: Mesh): Vector2[][][] {
     console.log('Slicing model:', model);
+    const layerHeight = this.settingsService.getSettings()().layerHeight;
+
 
     const geometry = model.geometry;
     geometry.computeBoundingBox();

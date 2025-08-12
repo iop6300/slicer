@@ -1,9 +1,10 @@
-import { Settings } from './settings/settings';
-import { Component, signal, ViewChild } from '@angular/core';
+import { Component, signal, ViewChild, inject } from '@angular/core';
 import { Viewer } from './viewer/viewer';
 import { Slicer } from './slicer';
 import { Gcode } from './gcode';
 import { Vector2 } from 'three';
+import { SettingsService } from './settings.service';
+import { Settings } from './settings/settings';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ export class App {
   slicedLayers = signal<Vector2[][][] | null>(null);
 
   @ViewChild(Viewer) private viewer!: Viewer;
+  private settingsService = inject(SettingsService);
 
   constructor(private slicer: Slicer, private gcodeService: Gcode) {}
 

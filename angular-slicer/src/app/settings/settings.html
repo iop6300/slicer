@@ -1,1 +1,15 @@
-<p>settings works!</p>
+<div>
+  <h3>Slicer Settings</h3>
+  <div>
+    <label for="layerHeight">Layer Height:</label>
+    <input type="number" id="layerHeight" [ngModel]="settings().layerHeight" (ngModelChange)="updateSettings({ layerHeight: $event })">
+  </div>
+  <div>
+    <label for="infillPercentage">Infill Percentage:</label>
+    <input type="number" id="infillPercentage" [ngModel]="settings().infillPercentage" (ngModelChange)="updateSettings({ infillPercentage: $event })">
+  </div>
+  <div>
+    <label for="supportMaterial">Support Material:</label>
+    <input type="checkbox" id="supportMaterial" [ngModel]="settings().supportMaterial" (ngModelChange)="updateSettings({ supportMaterial: $event })">
+  </div>
+</div>
