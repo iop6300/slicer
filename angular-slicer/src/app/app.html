@@ -1,0 +1,8 @@
+<app-settings></app-settings>
+<div style="padding: 10px;">
+  <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" accept=".stl" />
+  <button (click)="fileInput.click()">Load STL Model</button>
+<button (click)="slice()" style="margin-left: 10px;">Slice</button>
+<button (click)="generateGcode()" style="margin-left: 10px;">Generate G-code</button>
+</div>
+<app-viewer [modelContent]="modelContent()" [slicedLayers]="slicedLayers()"></app-viewer>
