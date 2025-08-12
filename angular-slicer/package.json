@@ -1,12 +1,33 @@
 {
   "name": "angular-slicer",
   "version": "0.0.0",
+  "main": "electron.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "electron:start": "ng build --base-href ./ && electron .",
+    "electron:build": "ng build --base-href ./ && npx electron-builder@24.13.3"
+  },
+  "build": {
+    "appId": "com.example.angular-slicer",
+    "productName": "AngularSlicer",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/angular-slicer/browser/**/*",
+      "electron.js"
+    ],
+    "win": {
+      "target": "nsis",
+      "verifyUpdateCodeSignature": false
+    },
+    "mac": {
+      "target": "dmg"
+    }
   },
   "prettier": {
     "overrides": [
@@ -30,7 +51,8 @@
     "rxjs": "~7.8.0",
     "three": "^0.179.1",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.15.0",
+    "express": "^4.19.2"
   },
   "devDependencies": {
     "@angular/build": "^20.1.5",
@@ -44,6 +66,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "electron": "28.2.4",
+    "electron-builder": "24.13.3"
   }
 }

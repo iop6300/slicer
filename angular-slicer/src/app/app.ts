@@ -1,3 +1,4 @@
+import { Settings } from './settings/settings';
 import { Component, signal, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Viewer } from './viewer/viewer';
@@ -7,7 +8,7 @@ import * as THREE from 'three';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Viewer],
+  imports: [RouterOutlet, Viewer, Settings],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -16,7 +17,7 @@ export class App {
   modelContent = signal<ArrayBuffer | null>(null);
   slicedLayers = signal<THREE.Vector2[][][] | null>(null);
 
-  @ViewChild(Viewer) private viewer: Viewer;
+  @ViewChild(Viewer) private viewer!: Viewer;
 
   constructor(private slicer: Slicer, private gcodeService: Gcode) {}
 

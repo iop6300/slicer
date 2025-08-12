@@ -11,15 +11,15 @@ import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 })
 export class Viewer implements OnInit, OnChanges {
   @ViewChild('rendererCanvas', { static: true })
-  private rendererCanvas: ElementRef<HTMLCanvasElement>;
+  private rendererCanvas!: ElementRef<HTMLCanvasElement>;
 
   @Input() modelContent: ArrayBuffer | null = null;
   @Input() slicedLayers: THREE.Vector2[][][] | null = null;
 
-  private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
-  private renderer: THREE.WebGLRenderer;
-  private model: THREE.Mesh;
+  private scene!: THREE.Scene;
+  private camera!: THREE.PerspectiveCamera;
+  private renderer!: THREE.WebGLRenderer;
+  private model!: THREE.Mesh;
   private sliceGroup: THREE.Group = new THREE.Group();
 
   constructor() { }
@@ -55,6 +55,7 @@ export class Viewer implements OnInit, OnChanges {
   }
 
   private loadModel(): void {
+    if (!this.modelContent) return;
     if (this.model) {
       this.scene.remove(this.model);
     }
@@ -74,9 +75,16 @@ export class Viewer implements OnInit, OnChanges {
 
   private renderSlices(): void {
     this.clearSlices();
+    if (!this.slicedLayers || !this.model) return;
 
     this.slicedLayers.forEach((layer, layerIndex) => {
-      const z = (this.model.geometry.boundingBox.min.z + layerIndex * 0.2); // This is not robust
+      if (!this.model.geometry.boundingBox) {
+        this.model.geometry.computeBoundingBox();
+      }
+      const boundingBox = this.model.geometry.boundingBox;
+      if (!boundingBox) return;
+
+      const z = (boundingBox.min.z + layerIndex * 0.2); // This is not robust
       layer.forEach(polygon => {
         const points = polygon.map(p => new THREE.Vector3(p.x, p.y, z));
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -98,7 +106,9 @@ export class Viewer implements OnInit, OnChanges {
       this.model.rotation.y += 0.01;
     }
 
-    this.renderer.render(this.scene, this.camera);
+    if (this.renderer) {
+      this.renderer.render(this.scene, this.camera);
+    }
   }
 
   public getModel(): THREE.Mesh {

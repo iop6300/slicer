@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import * as ClipperLib from 'js-clipper';
 
+interface ClipperPoint {
+  X: number;
+  Y: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +17,11 @@ export class Slicer {
     const geometry = model.geometry;
     geometry.computeBoundingBox();
     const boundingBox = geometry.boundingBox;
+
+    if (!boundingBox) {
+      console.error('Bounding box could not be computed.');
+      return [];
+    }
 
     const layers = [];
     for (let z = boundingBox.min.z; z < boundingBox.max.z; z += layerHeight) {
@@ -29,7 +39,7 @@ export class Slicer {
 
   private getLayer(geometry: THREE.BufferGeometry, plane: THREE.Plane): THREE.Line3[] {
     const layerLines = [];
-    const positions = geometry.attributes.position;
+    const positions = geometry.attributes['position'] as THREE.BufferAttribute;
     const triangle = new THREE.Triangle();
 
     for (let i = 0; i < positions.count; i += 3) {
@@ -72,8 +82,8 @@ export class Slicer {
     const solution = new ClipperLib.Paths();
     clipper.Execute(ClipperLib.ClipType.ctUnion, solution, ClipperLib.PolyFillType.pftNonZero, ClipperLib.PolyFillType.pftNonZero);
 
-    const polygons = solution.map(path =>
-      path.map(point => new THREE.Vector2(point.X / scale, point.Y / scale))
+    const polygons = solution.map((path: ClipperPoint[]) =>
+      path.map((point: ClipperPoint) => new THREE.Vector2(point.X / scale, point.Y / scale))
     );
 
     return polygons;
