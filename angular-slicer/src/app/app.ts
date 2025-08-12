@@ -1,21 +1,20 @@
 import { Settings } from './settings/settings';
 import { Component, signal, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { Viewer } from './viewer/viewer';
 import { Slicer } from './slicer';
 import { Gcode } from './gcode';
-import * as THREE from 'three';
+import { Vector2 } from 'three';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Viewer, Settings],
+  imports: [Viewer, Settings],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('angular-slicer');
   modelContent = signal<ArrayBuffer | null>(null);
-  slicedLayers = signal<THREE.Vector2[][][] | null>(null);
+  slicedLayers = signal<Vector2[][][] | null>(null);
 
   @ViewChild(Viewer) private viewer!: Viewer;
 

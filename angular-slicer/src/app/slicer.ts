@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as THREE from 'three';
+import { Mesh, Vector2, Plane, Vector3, BufferGeometry, BufferAttribute, Triangle, Line3 } from 'three';
 import * as ClipperLib from 'js-clipper';
 
 interface ClipperPoint {
@@ -11,7 +11,7 @@ interface ClipperPoint {
   providedIn: 'root'
 })
 export class Slicer {
-  slice(model: THREE.Mesh, layerHeight: number = 0.2): THREE.Vector2[][][] {
+  slice(model: Mesh, layerHeight: number = 0.2): Vector2[][][] {
     console.log('Slicing model:', model);
 
     const geometry = model.geometry;
@@ -25,7 +25,7 @@ export class Slicer {
 
     const layers = [];
     for (let z = boundingBox.min.z; z < boundingBox.max.z; z += layerHeight) {
-      const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -z);
+      const plane = new Plane(new Vector3(0, 0, 1), -z);
       const layerLines = this.getLayer(geometry, plane);
       if (layerLines.length > 0) {
         const polygons = this.connectLines(layerLines);
@@ -37,10 +37,10 @@ export class Slicer {
     return layers;
   }
 
-  private getLayer(geometry: THREE.BufferGeometry, plane: THREE.Plane): THREE.Line3[] {
+  private getLayer(geometry: BufferGeometry, plane: Plane): Line3[] {
     const layerLines = [];
-    const positions = geometry.attributes['position'] as THREE.BufferAttribute;
-    const triangle = new THREE.Triangle();
+    const positions = geometry.attributes['position'] as BufferAttribute;
+    const triangle = new Triangle();
 
     for (let i = 0; i < positions.count; i += 3) {
       triangle.a.fromBufferAttribute(positions, i);
@@ -49,27 +49,27 @@ export class Slicer {
 
       const intersectionPoints = [];
       const edges = [
-        new THREE.Line3(triangle.a, triangle.b),
-        new THREE.Line3(triangle.b, triangle.c),
-        new THREE.Line3(triangle.c, triangle.a)
+        new Line3(triangle.a, triangle.b),
+        new Line3(triangle.b, triangle.c),
+        new Line3(triangle.c, triangle.a)
       ];
 
       for (const edge of edges) {
-        const intersectionPoint = new THREE.Vector3();
+        const intersectionPoint = new Vector3();
         if (plane.intersectLine(edge, intersectionPoint)) {
           intersectionPoints.push(intersectionPoint);
         }
       }
 
       if (intersectionPoints.length === 2) {
-        layerLines.push(new THREE.Line3(intersectionPoints[0], intersectionPoints[1]));
+        layerLines.push(new Line3(intersectionPoints[0], intersectionPoints[1]));
       }
     }
 
     return layerLines;
   }
 
-  private connectLines(lines: THREE.Line3[]): THREE.Vector2[][] {
+  private connectLines(lines: Line3[]): Vector2[][] {
     const scale = 1000; // Scale for integer coordinates
     const clipper = new ClipperLib.Clipper();
     const paths = lines.map(line => [
@@ -83,7 +83,7 @@ export class Slicer {
     clipper.Execute(ClipperLib.ClipType.ctUnion, solution, ClipperLib.PolyFillType.pftNonZero, ClipperLib.PolyFillType.pftNonZero);
 
     const polygons = solution.map((path: ClipperPoint[]) =>
-      path.map((point: ClipperPoint) => new THREE.Vector2(point.X / scale, point.Y / scale))
+      path.map((point: ClipperPoint) => new Vector2(point.X / scale, point.Y / scale))
     );
 
     return polygons;

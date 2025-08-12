@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import * as THREE from 'three';
+import { Vector2 } from 'three';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Gcode {
-  generate(layers: THREE.Vector2[][][], layerHeight = 0.2, feedRate = 1500): string {
+  generate(layers: Vector2[][][], layerHeight = 0.2, feedRate = 1500): string {
     let gcode = '';
 
     // Header
@@ -52,7 +52,7 @@ export class Gcode {
     return gcode;
   }
 
-  private getExtrusion(p1: THREE.Vector2, p2: THREE.Vector2, extrusionMultiplier = 0.04): number {
+  private getExtrusion(p1: Vector2, p2: Vector2, extrusionMultiplier = 0.04): number {
     const distance = p1.distanceTo(p2);
     return distance * extrusionMultiplier;
   }
